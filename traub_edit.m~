@@ -1,4 +1,4 @@
-%NOTES.  Created by Jessica Nadalin & Mark Kramer, November 2015.
+%NOTES.  C
 
 %  From [Cunningham PNAS 2004 SI].
 %  x.  No persistent Na
@@ -8,18 +8,17 @@
 %  x.  Updated KDR (done)
 
 % INPUTS:
-%  T  = ...  ****(fill these in)**** 
-%  I0 = ...
-%  gL = ...
+%  T  = 
+%  I0 =
+%  gL =
 %  ...
 
 % OUTPUTS:
-%  V = ...
-%  t = ...
+%  
 
 function [V,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK, C, sigma, ic)
 
-  dt = 0.005;               %Time step, **** UNITS ****?
+  dt = 0.005; %time step
  
   V = zeros(T,1);
   mNaF = zeros(T,1);
@@ -29,7 +28,8 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR,
   mKM = zeros(T,1);
   kV = zeros(T,1);
   
-  %Set the initial conditions (if passed as input).
+  %initial conditions
+  
   if isstruct(ic)
       V(1) = ic.V;
       mNaF(1) = ic.mNaF;
@@ -40,30 +40,30 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR,
       kV(1)   = ic.kV;
   end
       
-  for i=1:T-1                                                   %For each time step,
+  for i=1:T-1
       
-      noise   = sqrt(dt).*randn().*sigma;                       %Update the noise,
+      noise   = sqrt(dt).*randn().*sigma;
       
-      V(i+1) = V(i) + dt.*C*( -I0(i)  ...                       %Update the voltage,
-          - gL*(70.0 + V(i)) + ...                              %... leak current,
-          - gNaF.*mNaF(i).^3.0.*hNaF(i).*(-50.0 + V(i)) ...     %... NaF current,
-          - (  gKDR.*mKDR(i).^4.0 ...                           %... KDR current,
-             + gKM.*  mKM(i) ...                                %... M-current,
-             + gKv3*   kV(i)).*(-EK(i) + V(i)) ...              %... Kv3.1 current
-          - gCaH.*mCaH(i).^2.0.*(-125 + V(i))) ...              %... high-threshold calcium current.
+      V(i+1) = V(i) + dt.*C*( -I0(i)  ...
+          - gL*(70.0 + V(i)) + ...
+          - gNaF.*mNaF(i).^3.0.*hNaF(i).*(-50.0 + V(i)) ...    ;NaF current  Rev 50.
+          - (  gKDR.*mKDR(i).^4.0 ...                          ;KDR current  Rev -100.
+             + gKM.*  mKM(i) ...
+             + gKv3*   kV(i)).*(-EK(i) + V(i)) ...
+          - gCaH.*mCaH(i).^2.0.*(-125 + V(i))) ...
           + noise;
       
-      mNaF(i+1) = mNaF(i) + dt*(alpha_mNaF(V(i))*(1-mNaF(i))  - beta_mNaF(V(i))*mNaF(i));       %Update fast sodium activation variable.
-      hNaF(i+1) = hNaF(i) + dt*(alpha_hNaF(V(i))*(1-hNaF(i))  - beta_hNaF(V(i))*hNaF(i));       %Update fast sodium inactivation variable.
-      mKDR(i+1) = mKDR(i) + dt*(alpha_mKDR(V(i))*(1-mKDR(i))  - beta_mKDR(V(i))*mKDR(i));       %Update fast potassium activation variable.
-      mCaH(i+1) = mCaH(i) + dt*((1.6.*(1 - mCaH(i)))./(1 + exp(-0.072.*(-5 + V(i)))) - ...      %Update high threshold calcium activation variable.
-                                (0.02.*mCaH(i).*(8.9 + V(i)))./(-1 + exp((8.9 + V(i))/5.)));
-      kV(i+1)   = kV(i)   + dt*(alpha_KV(  V(i))*(1-  kV(i))  - beta_KV(  V(i))*kV(i));         %Update Kv3.1 activation variable.
-      mKM(i+1)  = mKM(i)  + dt*(alpha_mKM( V(i))*(1- mKM(i))  - beta_mKM( V(i))*mKM(i));        %Update M-current activation variable.
+      mNaF(i+1) = mNaF(i) + dt*(alpha_mNaF(V(i))*(1-mNaF(i))  - beta_mNaF(V(i))*mNaF(i));
+      hNaF(i+1) = hNaF(i) + dt*(alpha_hNaF(V(i))*(1-hNaF(i))  - beta_hNaF(V(i))*hNaF(i));
+      mKDR(i+1) = mKDR(i) + dt*(alpha_mKDR(V(i))*(1-mKDR(i))  - beta_mKDR(V(i))*mKDR(i));
+      mCaH(i+1) = mCaH(i) + dt*((1.6.*(1 - mCaH(i)))./(1 + exp(-0.072.*(-5 + V(i)))) - (0.02.*mCaH(i).*(8.9 + V(i)))./(-1 + exp((8.9 + V(i))/5.)));
+      kV(i+1)   = kV(i)   + dt*(alpha_KV(  V(i))*(1-  kV(i))  - beta_KV(  V(i))*kV(i));
+      mKM(i+1)  = mKM(i)  + dt*(alpha_mKM( V(i))*(1- mKM(i))  - beta_mKM( V(i))*mKM(i));
 
   end
   
-  %Set theinitial conditions to the last value of the output.
+  %Changing the initial conditions to the output
+  
   ic = {};
   t = dt*(1:T);
   ic.V = V(end);

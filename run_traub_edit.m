@@ -1,26 +1,24 @@
 % Example of FS-cell entering depolarization block (DB).
-%  The idea:  Increase extracellular potassium (EK) to enter DB.
+%  The idea: Increase reversal potential of potassium (EK) to enter DB.
 
 clear
 close all
 
 %Set parameters.
-T = 40000;
-C = 1.0;
-sigma = 0.5;
-gL  = 0.5;
-gLNa = 0.0;
-gLK  = 0.0;
-gNaF = 150;
-gKDR = 200;
-gCaH = 120;
-gKM  = 320;
-gKv3 = 1200;
+T = 40000;              % # steps in simulation.
+C = 1.0;                % Capacitance.
+sigma = 0.5;            % Noise level.
+gL  = 0.5;              % Leak conductance.
+gNaF = 150;             % Fast sodium max conductance.
+gKDR = 200;             % Fast potassium max conductance.
+gCaH = 120;             % High-threhsold calcium max conductance.
+gKM  = 320;             % M-current max conductance
+gKv3 = 1200;            % Kv3.1 potassium max conductance.
 
-%Define variables to save
-ic=0;
-V=[];
-EK=[];
+%Define variables to save.
+ic=0;                   % Set the initial conditions to 0.
+V=[];                   % ... ***** ADD COMMENTS FOR EACH LINE ****
+EK=[];                  % ...
 I=[];
 I0=ones(1,T)*-65;
 
