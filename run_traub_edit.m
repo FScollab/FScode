@@ -17,10 +17,10 @@ gKv3 = 1200;            % Kv3.1 potassium max conductance.
 
 %Define variables to save.
 ic=0;                   % Set the initial conditions to 0.
-V=[];                   % ... ***** ADD COMMENTS FOR EACH LINE ****
-EK=[];                  % ...
-I=[];
-I0=ones(1,T)*-65;
+V=[];                   % Voltage
+EK=[];                  % Reversal potential for potassium currents
+I=[];                   % Current
+I0=ones(1,T)*-65;       % Initial current
 
 %Start with EK at "baseline" level.
 EK0=ones(1,T)*-100;
