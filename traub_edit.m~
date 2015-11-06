@@ -28,7 +28,7 @@
 %  hNaF = Sodium channel inactivation
 %  mKDR = Potassium delayed rectifier channel activation
 %  mCaH = Calcium channel activation
-%  mkV = Potassium Kv3 channel activation
+%  kV = Potassium Kv3 channel activation
 %  mKM = Potassium muscarinic receptor-supressed channel activation
 %  ic = Initial Conditions
 
@@ -42,7 +42,7 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
   mKDR = zeros(T,1);
   mCaH = zeros(T,1);
   mKM = zeros(T,1);
-  mkV = zeros(T,1);
+  kV = zeros(T,1);
   
   %Set the initial conditions (if passed as input).
   if isstruct(ic)
@@ -52,7 +52,7 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
       mKDR(1) = ic.KDR;
       mCaH(1) = ic.mCaH;
       mKM(1)  = ic.mKM;
-      mkV(1)   = ic.kV;
+      kV(1)   = ic.kV;
   end
       
   for i=1:T-1                                                   %For each time step,
@@ -64,7 +64,7 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
           - gNaF.*mNaF(i).^3.0.*hNaF(i).*(-50.0 + V(i)) ...     %... NaF current,
           - (  gKDR.*mKDR(i).^4.0 ...                           %... KDR current,
              + gKM.*  mKM(i) ...                                %... M-current,
-             + gKv3*   mkV(i)).*(-EK(i) + V(i)) ...              %... Kv3.1 current
+             + gKv3*   kV(i)).*(-EK(i) + V(i)) ...              %... Kv3.1 current
           - gCaH.*mCaH(i).^2.0.*(-125 + V(i))) ...              %... high-threshold calcium current.
           + noise;
       
@@ -73,7 +73,7 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
       mKDR(i+1) = mKDR(i) + dt*(alpha_mKDR(V(i))*(1-mKDR(i))  - beta_mKDR(V(i))*mKDR(i));       %Update fast potassium activation variable.
       mCaH(i+1) = mCaH(i) + dt*((1.6.*(1 - mCaH(i)))./(1 + exp(-0.072.*(-5 + V(i)))) - ...      %Update high threshold calcium activation variable.
                                 (0.02.*mCaH(i).*(8.9 + V(i)))./(-1 + exp((8.9 + V(i))/5.)));
-      mkV(i+1)   = mkV(i)   + dt*(alpha_KV(  V(i))*(1-  mkV(i))  - beta_KV(  V(i))*mkV(i));         %Update Kv3.1 activation variable.
+      kV(i+1)   = kV(i)   + dt*(alpha_KV(  V(i))*(1-  kV(i))  - beta_KV(  V(i))*kV(i));         %Update Kv3.1 activation variable.
       mKM(i+1)  = mKM(i)  + dt*(alpha_mKM( V(i))*(1- mKM(i))  - beta_mKM( V(i))*mKM(i));        %Update M-current activation variable.
 
   end
@@ -87,7 +87,7 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
   ic.KDR = mKDR(end);
   ic.mCaH = mCaH(end);
   ic.mKM = mKM(end);
-  ic.kV = mkV(end);
+  ic.kV = kV(end);
 
 end
     

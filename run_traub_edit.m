@@ -24,14 +24,14 @@ I0=ones(1,T)*-65;       % Initial current
 
 %Start with EK at "baseline" level.
 EK0=ones(1,T)*-100;
-[V0,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK0, C, sigma,ic);
+[V0,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK0, C, sigma,ic);
 V = [V;V0];
 I = [I,I0];
 EK= [EK,EK0];
 
 %Then, increase EK.
 EK0=ones(1,T)*-60;
-[V0,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK0, C, sigma,ic);
+[V0,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK0, C, sigma,ic);
 V = [V;V0];
 I = [I,I0];
 EK= [EK,EK0];
