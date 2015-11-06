@@ -8,18 +8,33 @@
 %  x.  Updated KDR (done)
 
 % INPUTS:
-%  T  = ...  ****(fill these in)**** 
-%  I0 = ...
-%  gL = ...
-%  ...
+%  T  = #steps in simulation
+%  I0 = Initial current
+%  gL = Leak conductance
+%  gNaF = Fast sodium max conductance
+%  gKDR = Fast potassium max conductance
+%  gCaH = High-threshold calcium max conductance
+%  gKM = M-current max conductance
+%  gKv3 = Kv3.1 potassium max conductance
+%  EK = Reversal potential for potassium currents
+%  C = Capacitance
+%  sigma = Noise level
+%  ic = Initial conditions
 
 % OUTPUTS:
-%  V = ...
-%  t = ...
+%  V = Voltage
+%  t = Simulation time
+%  mNaF = Sodium channel activation
+%  hNaF = Sodium channel inactivation
+%  mKDR = Potassium delayed rectifier channel activation
+%  mCaH = Calcium channel activation
+%  kV = Potassium Kv3 channel activation
+%  mKM = Potassium muscarinic receptor-supressed channel activation
+%  ic = Initial Conditions
 
 function [V,t,mNaF,hNaF,mKDR,mCaH,kV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR, gCaH, gKM, gKv3, EK, C, sigma, ic)
 
-  dt = 0.005;               %Time step, **** UNITS ****?
+  dt = 0.005;               %Time step, milliseconds
  
   V = zeros(T,1);
   mNaF = zeros(T,1);
@@ -128,14 +143,14 @@ function res = beta_mKDR(V)  % KDR activation [Cunningham SI 2004].
   res = (1.0 - minf)./taum;
 end
 
-function aK = alpha_KV(V)
+function aK = alpha_KV(V)  % K-current forward rate function [Lien, 2003].
 a = 0.0189324;
 b = -4.18371;
 c = 6.42606;
-aK = a*(-((V)+b)) / (exp(-((V)+b)/c)-1);
+aK = a*(-((V)+b)) / (exp(-((V)+b)/c)-1);   
 end
 
-function bK = beta_KV(V)
+function bK = beta_KV(V)  % K-current backward rate function [Lien, 2003].
 d = 0.015857;
 e = 25.4834;
 bK = d*exp(-(V)/e);
