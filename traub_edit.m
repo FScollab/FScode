@@ -1,10 +1,13 @@
-%NOTES.  Created by Jessica Nadalin & Mark Kramer, November 2015.
+%NOTES.  Created by Jessica Nadalin & Mark Kramer, December 2015.
+
+%  From [Traub J Neurophys 2003].
+%  x. Use fast Na activation & inactivation.
 
 %  From [Cunningham PNAS 2004 SI].
 %  x.  No persistent Na
 %  x.  No h-current
-%  x.  Updated fast Na activation (done)
-%  x.  Updated fast Na inactivation (done)
+%  x.  Updated fast Na activation (done)        <--- REPLACED [12/17/15]
+%  x.  Updated fast Na inactivation (done)      <--- REPLACED [12/17/15]
 %  x.  Updated KDR (done)
 
 % INPUTS:
@@ -91,22 +94,22 @@ function [V,t,mNaF,hNaF,mKDR,mCaH,mkV,mKM,ic] = traub_edit(T, I0, gL, gNaF, gKDR
 
 end
     
-function res = alpha_mNaF(V)    % NaF activation [Cunningham SI 2004].
-  minf = 1.0 ./ (1.0 + exp( (-V-38.0)/10 ));
-  if V < -30
-      taum = 0.0125 + 0.1525 * exp((V+30.0)/10);
+function res = alpha_mNaF(V)    % NaF activation [Traub J Neurophysiol 2003]. <--- REPLACED [12/17/15]
+  minf = 1.0 ./ (1.0 + exp( (-V-34.5)/10 ));
+  if V < -26.5
+      taum = 0.0225 + 0.1425 * exp((V+26.5)/10);
   else
-      taum = 0.02   + 0.145  * exp((V-30.0)/10);
+      taum = 0.0225 + 0.1425 * exp((-V-26.5)/10);
   end
   res = minf./taum;
 end
 
-function res = beta_mNaF(V)    % NaF activation  [Cunningham SI 2004].
-  minf = 1.0 ./ (1.0 + exp( (-V-38.0)/10 ));
-  if V < -30
-      taum = 0.0125 + 0.1525 * exp((V+30.0)/10);
+function res = beta_mNaF(V)    % NaF activation  [Traub J Neurophysiol 2003]. <--- REPLACED [12/17/15]
+  minf = 1.0 ./ (1.0 + exp( (-V-34.5)/10 ));
+  if V < -26.5
+      taum = 0.0225 + 0.1425 * exp((V+26.5)/10);
   else
-      taum = 0.02   + 0.145  * exp((V-30.0)/10);
+      taum = 0.0225 + 0.1425 * exp((-V-26.5)/10);
   end
   res = (1.0 - minf)./taum;
 end
